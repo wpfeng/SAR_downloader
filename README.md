@@ -10,6 +10,7 @@ A collection of Python scripts for querying and downloading Sentinel-1 SAR data 
 - [Requirements](#requirements)
 - [Tool 1: CDSE Sentinel-1 Downloader](#tool-1-cdse-sentinel-1-downloader)
 - [Tool 2: ASF Sentinel-1 Search Tool](#tool-2-asf-sentinel-1-search-tool)
+- [Tool 3: ASF NISAR Search & Download Tool](#tool-3-asf-nisar-search--download-tool)
 - [Quick Comparison](#quick-comparison)
 - [Tips](#tips)
 
@@ -21,6 +22,7 @@ A collection of Python scripts for querying and downloading Sentinel-1 SAR data 
 |------|-------------|----------------|------------------|
 | `py_cdse_s1downloader.py` | ESA CDSE | CDSE Account (OAuth2) | Full-archive access, SLC/GRD/RAW, Europe-centric |
 | `py_asf_searchS1.py` | NASA ASF | NASA Earthdata | Fast search, bulk download via aria2c, North America optimized |
+| `py_asf_NISARdownloading.py` | NASA ASF | NASA Earthdata | NISAR L1 RSLC search/download, KML footprint generation |
 
 ---
 
@@ -38,8 +40,11 @@ pip install requests pandas tqdm
 # For CDSE tool (optional but recommended)
 pip install shapely
 
-# For ASF tool
+# For ASF S1 tool
 pip install asf_search
+
+# For ASF NISAR tool
+pip install asf_search simplekml pygeoif geojson
 ```
 
 ---
@@ -161,25 +166,119 @@ python py_asf_searchS1.py \
 
 ---
 
+## Tool 3: ASF NISAR Search & Download Tool
+
+Search and download NISAR L1 RSLC data from the Alaska Satellite Facility (ASF). Supports KML generation, zip packaging, and selective HDF5-only downloads.
+
+### Setup
+
+Uses the same NASA Earthdata credentials as the ASF Sentinel-1 tool:
+
+```bash
+mkdir -p ~/.asf
+cat > ~/.asf/passwd <<EOF
+your_username your_password
+EOF
+chmod 600 ~/.asf/passwd
+```
+
+Additional dependencies:
+
+```bash
+pip install asf_search simplekml pygeoif geojson
+```
+
+### Usage
+
+**Search only** (generate KML footprint):
+```bash
+python py_asf_NISARdownloading.py \
+  20250601 20250730 \
+  87.2,88.1,28.2,29 \
+  -track 12 \
+  -outkml nisar_results.kml
+```
+
+**Search + download all files**:
+```bash
+python py_asf_NISARdownloading.py \
+  20250601 20250730 \
+  87.2,88.1,28.2,29 \
+  -track 12 \
+  -download \
+  -nisar_db ./nisar_data
+```
+
+**Download HDF5 only** (via aria2c):
+```bash
+python py_asf_NISARdownloading.py \
+  20250601 20250730 \
+  87.2,88.1,28.2,29 \
+  -track 12 \
+  -download \
+  -only_h5 \
+  -nisar_db ./nisar_data
+```
+
+**Download + auto-package to ZIP**:
+```bash
+python py_asf_NISARdownloading.py \
+  20250601 20250730 \
+  87.2,88.1,28.2,29 \
+  -track 12 \
+  -download -zip \
+  -nisar_db ./nisar_data
+```
+
+### Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `start_time` | Start date (`YYYYMMDD`) |
+| `end_time` | End date (`YYYYMMDD`) |
+| `ext` | Bounding box: `lonmin,lonmax,latmin,latmax` |
+| `-track N` | **Required.** Relative orbit number |
+| `-download` | Trigger download (default: search only) |
+| `-zip` | Auto-package each scene into a single ZIP file |
+| `-only_h5` | Download only `.h5` files using aria2c |
+| `-nisar_db PATH` | Output directory (default: current dir or `$NISAR_DB`) |
+| `-outkml FILE` | KML footprint output (default: `asf_nisar.kml`) |
+| `-user USER` | Override Earthdata username |
+| `-pwd PASS` | Override Earthdata password |
+
+### Outputs
+
+- `asf_nisar.kml` — Search result footprints (viewable in Google Earth)
+- `nisar_db/*.h5` / `*.zip` — Downloaded NISAR products
+- Scene-level ZIP archives (if `-zip` is enabled)
+
+> **Note:** The `-only_h5` mode uses `aria2c` directly for faster HDF5 downloads. Ensure aria2c is installed.
+
+---
+
 ## Quick Comparison
 
-| Feature | CDSE Tool | ASF Tool |
-|---------|-----------|----------|
-| **Product types** | SLC, GRD, RAW, OCN | SLC (fixed) |
-| **AOI formats** | WKT, GeoJSON, bbox | Bbox only |
-| **Output formats** | JSON, CSV, GeoJSON | CSV |
-| **Download method** | Built-in (requests) | External (aria2c) |
-| **Authentication** | CDSE OAuth2 | NASA Earthdata |
-| **Local cache check** | Yes (`/mnt/NAS80T*/S1/`) | No |
-| **Config file support** | Yes (`--config`) | No |
+| Feature | CDSE S1 Tool | ASF S1 Tool | ASF NISAR Tool |
+|---------|-------------|-------------|----------------|
+| **Data source** | ESA CDSE | NASA ASF | NASA ASF |
+| **Product types** | SLC, GRD, RAW, OCN | SLC (fixed) | NISAR L1 RSLC |
+| **AOI formats** | WKT, GeoJSON, bbox | Bbox only | Bbox only |
+| **Output formats** | JSON, CSV, GeoJSON | CSV | KML |
+| **Download method** | Built-in (requests) | External (aria2c) | Built-in / aria2c (`-only_h5`) |
+| **Authentication** | CDSE OAuth2 | NASA Earthdata | NASA Earthdata |
+| **Local cache check** | Yes (`/mnt/NAS80T*/S1/`) | No | Yes (file existence) |
+| **Config file support** | Yes (`--config`) | No | No |
+| **Track filtering** | Yes (`--relative-orbit`) | No | Yes (`-track`, required) |
+| **Auto zip packaging** | No | No | Yes (`-zip`) |
 
 ---
 
 ## Tips
 
-- **Choose CDSE** when you need GRD/RAW products, complex AOI queries, or direct downloads without external tools.
-- **Choose ASF** when you need fast bulk downloads via aria2c or prefer NASA Earthdata credentials.
-- Both tools support **resume/skip** for existing files (CDSE checks local NAS paths; ASF checks file size).
+- **Choose CDSE S1** when you need GRD/RAW products, complex AOI queries, or direct downloads without external tools.
+- **Choose ASF S1** when you need fast bulk downloads via aria2c or prefer NASA Earthdata credentials.
+- **Choose ASF NISAR** when working with NISAR L1 RSLC data, need KML footprint visualization, or want automatic ZIP packaging.
+- All tools support **resume/skip** for existing files (CDSE checks local NAS paths; ASF/NISAR check file existence).
 - Keep your credential files (`~/.cdse`, `~/.asf/passwd`) **readable only by you** (`chmod 600`).
 
 ---
