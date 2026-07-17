@@ -89,15 +89,19 @@ def get_passwd():
     #
     usr = []
     passwd = []
-    with open('/home/wafeng/.asf/passwd','r') as fid:
-        for cline in fid:
-            #
-            tmp = cline.split('\n')[0].split()
-            #
-            usr = tmp[0]
-            passwd = tmp[1]
-            #
+    try: 
+        with open('/home/wafeng/.asf/passwd','r') as fid:
+          for cline in fid:
+             #
+             tmp = cline.split('\n')[0].split()
+             #
+             usr = tmp[0]
+             passwd = tmp[1]
+             #
         #
+    except:
+        usr = None
+        passwd = None
     #
     return usr,passwd
 #
@@ -168,23 +172,32 @@ if len(sys.argv)<3:
     #
     helpstr = \
             '''
-            %s <start_date1> <end_date2> <roi> <out_csv> 
+            %s <start_date1> <end_date2> <roi> <out_csv> --usr <usr> --password <password> 
             ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             To get Sentinel-1 SLC datalist using asf_search
 
             Example:
             %s 2025-06-01 2025-07-30 87.2,88.1,28.2,29 s1_output.csv 
+
+            
             '''
     #
     print(helpstr % (sys.argv[0],sys.argv[0]))
     sys.exit(-1)
 #
 download = False
+usr = None
+passwd = None
+#
 for i,key in enumerate(sys.argv):
     #
     if key == '-download':
         download = True
         #
+    if key == '--usr':
+        usr = sys.argv[i+1]
+    if key == '--password':
+        passwd = sys.argv[i+1]
     #
 #
 log(sys.argv)
@@ -218,7 +231,15 @@ if __name__ == "__main__":
     # Execute search and save
     #
     #
-    usr,passwd = get_passwd()
+    if usr is None:
+       usr,passwd = get_passwd()
+       if usr is None:
+           #
+           print(" Error: usr and password must be given...")
+           sys.exit(-1)
+           #
+       #
+    #
     search_and_save_sentinel1_data(example_wkt, START_DATE, END_DATE, OUTPUT_CSV,False,usr,passwd)
     #
     df = pd.read_csv(OUTPUT_CSV, skip_blank_lines=True)
