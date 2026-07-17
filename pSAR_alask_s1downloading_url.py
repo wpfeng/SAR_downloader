@@ -29,21 +29,69 @@ import sys, csv
 import os, os.path
 import tempfile, shutil
 import re
-import pSAR
+# import pSAR
 import base64
 import time
 import getpass
 import ssl
 import zipfile 
 import shutil
-import pDATA
+# import pDATA
 #
 import xml.etree.ElementTree as ET
 #
 # dbtool could be "python",'wget' or 'aria2'
 dbtool = 'python'
 # 
-pSAR.util.log(sys.argv)
+def zipcheck(in_zip):
+    try:
+      zipID = zipfile.ZipFile(in_zip)
+    except:
+      return False
+    #
+    try:
+      ret = zipID.testzip()
+      if ret is not None:
+        return False
+      else:
+        return True
+    except:
+        return False
+
+def log(funcin,logname=None,info='Start'):
+    '''
+    Log inputs of a script to a local ascii file
+    by Wanpeng Feng, @NRcan, 2017-08-21
+    '''
+    p_func  = funcin[0]
+    #
+    if logname is None:
+       logname = os.path.basename(p_func)
+       logname = os.path.splitext(logname)[0]+'.log'
+    cnow = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
+    #
+    print(" *** %s @%s into %s" % (info,cnow,logname))
+    try:
+      with open(logname,'a') as fid:
+        fid.write('%s: ' % cnow)
+        for i,ckey in enumerate(funcin):
+           if i < len(funcin)-1:
+              fid.write('%s ' % funcin[i])
+           else:
+              fid.write('%s\n' % funcin[i])
+        #
+        fid.close()
+    except:
+        print("ERROR: %s cannot be written in the current folder!!!" % logname)
+    #
+    if os.path.exists(logname):
+       return True
+    else:
+       return False
+   #
+# pSAR.util.log(sys.argv)
+log(sys.argv)
+#
 #
 if len(sys.argv)<2:
    helpstr = \
@@ -175,7 +223,7 @@ def backupzip(s1zip):
     #
     # pDATA.zipcheck is more reliable...
     #
-    if pDATA.zipcheck(s1zip) and goflag:
+    if zipcheck(s1zip) and goflag:
     #
        # s1zip is not a system link
        # Wanpeng Feng, @SYSU, Guangzhou, 2019/05/19
@@ -253,7 +301,7 @@ def download_aria2(in_list):
            os.system(aria2_GO)
         #
         # myzipfile,flag = checkifdone(os.path.basename(cfile))
-        if not flag and pDATA.zipcheck(os.path.basename(cfile)):
+        if not flag and zipcheck(os.path.basename(cfile)):
            flag = backupzip(os.path.basename(cfile))
         #
     #
