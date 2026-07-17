@@ -40,8 +40,9 @@ pip install requests pandas tqdm
 # For CDSE tool (optional but recommended)
 pip install shapely
 
-# For ASF S1 tool
+# For ASF S1 tool, aria2 is highly recommanded for downloading SAR data...
 pip install asf_search
+sudo apt-get install aria2
 
 # For ASF NISAR tool
 pip install asf_search simplekml pygeoif geojson
