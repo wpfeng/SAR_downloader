@@ -1,6 +1,6 @@
 # Sentinel-1 Data Download Tools
 
-A collection of Python scripts for querying and downloading Sentinel-1 SAR data from **ESA CDSE** (Copernicus Data Space Ecosystem) and **ASF** (Alaska Satellite Facility).
+A collection of Python scripts for querying and downloading Sentinel-1 and NISAR SAR data from **ESA CDSE** (Copernicus Data Space Ecosystem) and **ASF** (Alaska Satellite Facility).
 
 ---
 
