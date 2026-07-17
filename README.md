@@ -20,8 +20,8 @@ A collection of Python scripts for querying and downloading Sentinel-1 and NISAR
 
 | Tool | Data Source | Authentication | Typical Use Case |
 |------|-------------|----------------|------------------|
-| `py_cdse_s1downloader.py` | ESA CDSE | CDSE Account (OAuth2) | Full-archive access, SLC/GRD/RAW, Europe-centric |
-| `py_asf_searchS1.py` | NASA ASF | NASA Earthdata | Fast search, bulk download via aria2c, North America optimized |
+| `py_cdse_s1downloader.py` | ESA CDSE | CDSE Account (OAuth2) |  access for data received in the recent 12 months, SLC/GRD/RAW, Europe-centric |
+| `py_asf_searchS1.py` | NASA ASF | NASA Earthdata | full-archive access with lastest data delayed, bulk download via aria2c, North America optimized |
 | `py_asf_NISARdownloading.py` | NASA ASF | NASA Earthdata | NISAR L1 RSLC search/download, KML footprint generation |
 
 ---
