@@ -10,12 +10,42 @@ import shutil
 import zipfile
 from datetime import datetime
 import logging
-import pSAR
+#import pSAR
 import json
 import geojson
 import simplekml
 from pygeoif import geometry
 #
+def log(funcin,logname=None,info='Start'):
+    '''
+    Log inputs of a script to a local ascii file
+    by Wanpeng Feng, @NRcan, 2017-08-21
+    '''
+    p_func  = funcin[0]
+    #
+    if logname is None:
+       logname = os.path.basename(p_func)
+       logname = os.path.splitext(logname)[0]+'.log'
+    cnow = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
+    #
+    print(" *** %s @%s into %s" % (info,cnow,logname))
+    try:
+      with open(logname,'a') as fid:
+        fid.write('%s: ' % cnow)
+        for i,ckey in enumerate(funcin):
+           if i < len(funcin)-1:
+              fid.write('%s ' % funcin[i])
+           else:
+              fid.write('%s\n' % funcin[i])
+        #
+        fid.close()
+    except:
+        print("ERROR: %s cannot be written in the current folder!!!" % logname)
+    #
+    if os.path.exists(logname):
+       return True
+    else:
+       return False
 ######
 def nisarinfo2kml(results,outkml):
     #
@@ -148,7 +178,8 @@ if len(sys.argv) < 2:
    sys.exit(-1)
    #
 #
-pSAR.util.log(sys.argv)
+# pSAR.util.log(sys.argv)
+log(sys.argv)
 #
 if True:
    #
