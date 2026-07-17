@@ -281,6 +281,7 @@ python py_asf_NISARdownloading.py \
 - **Choose ASF NISAR** when working with NISAR L1 RSLC data, need KML footprint visualization, or want automatic ZIP packaging.
 - All tools support **resume/skip** for existing files (CDSE checks local NAS paths; ASF/NISAR check file existence).
 - Keep your credential files (`~/.cdse`, `~/.asf/passwd`) **readable only by you** (`chmod 600`).
+- If you do not plan to prepare credential files in your usr account, --usr and --password (or --passwd) can pass your account into tools instead.
 
 ---
 
