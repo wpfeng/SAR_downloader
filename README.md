@@ -221,12 +221,11 @@ python py_asf_NISARdownloading.py \
   -nisar_db ./nisar_data
 ```
 
-**Download + auto-package to ZIP**:
+**Download + auto-package to ZIP**: (if no track is given, data in available tracks will be returned)
 ```bash
 python py_asf_NISARdownloading.py \
   2025-06-01 2025-07-30 \
   87.2,88.1,28.2,29 \
-  -track 12 \
   -download -zip \
   -nisar_db ./nisar_data
 ```
