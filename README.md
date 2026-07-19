@@ -203,7 +203,7 @@ python py_asf_NISARdownloading.py \
 **Search + download all files**:
 ```bash
 python py_asf_NISARdownloading.py \
-  20250601 20250730 \
+  2025-06-01 2025-07-30 \
   87.2,88.1,28.2,29 \
   -track 12 \
   -download \
@@ -213,7 +213,7 @@ python py_asf_NISARdownloading.py \
 **Download HDF5 only** (via aria2c):
 ```bash
 python py_asf_NISARdownloading.py \
-  20250601 20250730 \
+  2025-06-01 2025-07-30 \
   87.2,88.1,28.2,29 \
   -track 12 \
   -download \
@@ -224,7 +224,7 @@ python py_asf_NISARdownloading.py \
 **Download + auto-package to ZIP**:
 ```bash
 python py_asf_NISARdownloading.py \
-  20250601 20250730 \
+  2025-06-01 2025-07-30 \
   87.2,88.1,28.2,29 \
   -track 12 \
   -download -zip \
@@ -235,8 +235,8 @@ python py_asf_NISARdownloading.py \
 
 | Argument | Description |
 |----------|-------------|
-| `start_time` | Start date (`YYYYMMDD`) |
-| `end_time` | End date (`YYYYMMDD`) |
+| `start_time` | Start date (`YYYY-MM-DD`) |
+| `end_time` | End date (`YYYY-MM-DD`) |
 | `ext` | Bounding box: `lonmin,lonmax,latmin,latmax` |
 | `-track N` | **Required.** Relative orbit number |
 | `-download` | Trigger download (default: search only) |
