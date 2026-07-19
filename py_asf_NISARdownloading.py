@@ -247,15 +247,25 @@ if True:
    except Exception as e:
            print(f"[!] Loading error: {e}")
            sys.exit(-1)
-   results = asf.search(
+   
+   #
+   if track is not None:
+      results = asf.search(
            dataset=asf.DATASET.NISAR,
            intersectsWith=ext,
            start=start_time,
            end=end_time,
            processingLevel=asf.PRODUCT_TYPE.RSLC,
            relativeOrbit=int(track),
-           maxResults=9999
-   )
+           maxResults=9999)
+   else:
+      results = asf.search(
+           dataset=asf.DATASET.NISAR,
+           intersectsWith=ext,
+           start=start_time,
+           end=end_time,
+           processingLevel=asf.PRODUCT_TYPE.RSLC,
+           maxResults=9999)   
    #
    #
    nisarinfo2kml(results,outkml)
