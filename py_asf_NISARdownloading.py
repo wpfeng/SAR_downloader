@@ -26,7 +26,8 @@ def log(funcin,logname=None,info='Start'):
     if logname is None:
        logname = os.path.basename(p_func)
        logname = os.path.splitext(logname)[0]+'.log'
-    cnow = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
+    # cnow = datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
+    cnow = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
     #
     print(" *** %s @%s into %s" % (info,cnow,logname))
     try:
@@ -108,7 +109,7 @@ def convert_to_asf_params(ext, start_time, end_time):
         sys.exit(-1)
     #
     def to_iso(d_str):
-        return datetime.strptime(d_str, '%Y%m%d').strftime('%Y-%m-%dT%H:%M:%SZ')
+        return datetime.strptime(d_str, '%Y-%m-%d').strftime('%Y-%m-%dT%H:%M:%SZ')
     start_time = to_iso(start_time)
     end_time   = to_iso(end_time)
     return ext, start_time, end_time
@@ -171,7 +172,7 @@ if len(sys.argv) < 2:
        ++++++++++++++
        To search / download NISAR data directly from ASF...
        
-       <end_time> should be in a format as 20250601
+       <end_time> should be in a format as 2025-06-01
        ++++++++++++++
    '''
    print(helpstr % sys.argv[0])
