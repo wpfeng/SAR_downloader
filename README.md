@@ -279,7 +279,7 @@ python py_asf_NISARdownloading.py \
 - **Choose ASF S1** when you need fast bulk downloads via aria2c or prefer NASA Earthdata credentials.
 - **Choose ASF NISAR** when working with NISAR L1 RSLC data, need KML footprint visualization, or want automatic ZIP packaging.
 - All tools support **resume/skip** for existing files (CDSE checks local NAS paths; ASF/NISAR check file existence).
-- Keep your credential files (`~/.cdse`, `~/.asf/passwd`) **readable only by you** (`chmod 600`).
+- Keep your credential files (`~/.cdse`, `~/.asf/passwd`) **readable only by you** (`chmod 600`). Otherwise, you can pass account info by giving -usr/--user and -pwd/--password .
 - If you do not plan to prepare credential files in your usr account, --usr and --password (or --passwd) can pass your account into tools instead.
 
 ---
