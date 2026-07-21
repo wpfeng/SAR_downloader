@@ -229,7 +229,16 @@ python py_asf_NISARdownloading.py \
   -download -zip \
   -nisar_db ./nisar_data
 ```
-
+**Download + auto-package to ZIP**: (you can pass account info by giving -usr and -pwd)
+```bash
+python py_asf_NISARdownloading.py \
+  2025-06-01 2025-07-30 \
+  87.2,88.1,28.2,29 \
+  -download -zip \
+  -nisar_db ./nisar_data
+   -usr <asf_user_name>
+   -pwd <password of asf_user_name>
+```
 ### Arguments
 
 | Argument | Description |
